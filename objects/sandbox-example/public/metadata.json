@@ -1,0 +1,9 @@
+{
+    "name": "sandbox-example",
+    "csp": {
+        "script-src": "'self' https://cdnjs.cloudflare.com/ajax/libs/ethers/6.5.0/ethers.min.js",
+        "connect-src": "https://rpc.gnosischain.com/",
+        "object-src": "'none'",
+        "base-uri": "'none'"
+    }
+}
