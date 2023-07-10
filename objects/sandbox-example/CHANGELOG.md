@@ -1,5 +1,11 @@
 # @waku-objects/sandbox-example
 
+## 0.0.3
+
+### Patch Changes
+
+- 06fbd72: chore: add sandbox property to metadata
+
 ## 0.0.2
 
 ### Patch Changes
