@@ -1,4 +1,8 @@
 {
+	"scripts": {
+		"ci:build": "pnpm run --parallel -r build",
+		"ci:publish": "pnpm run ci:build && pnpm changeset publish"
+	},
 	"devDependencies": {
 		"@changesets/cli": "^2.26.2"
 	}
