@@ -1,5 +1,12 @@
 # @waku-objects/sandbox-example
 
+## 0.0.4
+
+### Patch Changes
+
+- bed0cb3: fix: packaging
+- dce81f6: chore: upgrade to Svelte 4
+
 ## 0.0.3
 
 ### Patch Changes
