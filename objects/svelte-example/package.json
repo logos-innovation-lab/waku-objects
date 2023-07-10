@@ -1,5 +1,5 @@
 {
-	"name": "svelte-example",
+	"name": "@waku-objects/svelte-example",
 	"version": "0.0.1",
 	"scripts": {
 		"dev": "vite dev",
