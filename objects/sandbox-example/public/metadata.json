@@ -1,6 +1,6 @@
 {
-    "name": "sandbox-example",
-    "sandbox": true,
+    "name": "Sandbox example",
+    "description": "Example of an external sandboxed app",
     "csp": {
         "script-src": "'self' https://cdnjs.cloudflare.com/ajax/libs/ethers/6.5.0/ethers.min.js",
         "connect-src": "https://rpc.gnosischain.com/",
