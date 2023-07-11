@@ -1,5 +1,11 @@
 # @waku-objects/sandbox-example
 
+## 0.0.5
+
+### Patch Changes
+
+- bc58545: chore: add metadata
+
 ## 0.0.4
 
 ### Patch Changes
