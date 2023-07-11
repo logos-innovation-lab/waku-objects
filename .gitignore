@@ -25,6 +25,7 @@ dist-ssr
 
 # pnpm
 .pnpm-store
+.npmrc
 
 # Waku Objects
 objects/*/object
