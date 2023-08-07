@@ -1,0 +1,28 @@
+{
+  "name": "@waku-objects/adapter",
+  "version": "0.0.0",
+  "type": "module",
+  "main": "./dist/adapter.umd.cjs",
+  "module": "./dist/adapter.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/adapter.js",
+      "require": "./dist/adapter.umd.cjs"
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@types/node": "^20.4.8",
+    "typescript": "^5.0.2",
+    "vite": "^4.4.5",
+    "vite-plugin-dts": "^3.5.1"
+  },
+  "dependencies": {
+    "p-defer": "^4.0.0"
+  }
+}
