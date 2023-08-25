@@ -23,6 +23,7 @@
     "vite": "^4.3.9"
   },
   "dependencies": {
+    "@waku-objects/adapter": "link:../../packages/adapter",
     "ethers": "^6.6.0"
   }
 }

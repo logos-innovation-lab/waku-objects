@@ -13,6 +13,9 @@ importers:
 
   objects/sandbox-example:
     dependencies:
+      '@waku-objects/adapter':
+        specifier: link:../../packages/adapter
+        version: link:../../packages/adapter
       ethers:
         specifier: ^6.6.0
         version: 6.6.0
