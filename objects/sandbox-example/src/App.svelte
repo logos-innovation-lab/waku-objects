@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { makeWakuObjectAdapter, startEventListener } from "@waku-objects/adapter"
+  import { makeWakuObjectAdapter, makeWakuObjectContext, startEventListener } from "@waku-objects/adapter"
   import { onMount } from "svelte";
 
   onMount(() => {
@@ -8,7 +8,8 @@
 
   async function action() {
     const adapter = makeWakuObjectAdapter()
-    const transaction = await adapter.getTransaction('0x46593fe25fadddd0bb3feb3017b8745a471d61e5c650c3dc5c0920f46216d0b6')
+    const context = makeWakuObjectContext(adapter)
+    const transaction = await context.getTransaction('0x46593fe25fadddd0bb3feb3017b8745a471d61e5c650c3dc5c0920f46216d0b6')
     console.debug('sandbox-example: action', { transaction })
   }
 </script>

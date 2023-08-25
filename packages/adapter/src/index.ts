@@ -1,5 +1,5 @@
 import pDefer, { DeferredPromise } from "p-defer";
-import { DataMessage, Token, TokenSchema, TransactionSchema, TransactionStateSchema, WakuObjectAdapter, WakuObjectDescriptor } from './types'
+import { DataMessage, JSONSerializable, Token, TokenSchema, TransactionSchema, TransactionStateSchema, WakuObjectAdapter, WakuObjectArgs, WakuObjectContext, WakuObjectState } from './types'
 import { Contract } from "ethers";
 
 interface AdapterRequestMessage {
@@ -13,6 +13,17 @@ interface AdapterResponseMessage {
   type: 'adapter',
   id: string
   result: unknown
+}
+
+export interface IframeDataMessage {
+	type: 'iframe-data-message'
+	message: DataMessage
+  state: WakuObjectState
+}
+
+export interface IframeStartMessage {
+  type: 'iframe-start-message'
+  state: WakuObjectState
 }
 
 // Store
@@ -45,35 +56,8 @@ const adapterFunction = (name: string) => (...args: string[]) => {
   return defer.promise;
 };
 
-// const adapterFunctions = [
-//   "getTransaction",
-//   "getTransactionState",
-//   "waitForTransaction",
-//   "checkBalance",
-//   "sendTransaction",
-//   "estimateTransaction",
-//   "updateStore",
-//   "onViewChange",
-// ] as const;
-
-// type AdapterFunction = (args: string[]) => Promise<unknown>;
-// type AdapterFunctions = (typeof adapterFunctions)[number];
-
-// const generateSdk = (): Record<AdapterFunctions, AdapterFunction> => {
-//   const sdk: Partial<Record<AdapterFunctions, AdapterFunction>> = {};
-
-//   for (const name of adapterFunctions) {
-//     sdk[name] = adapterFunction(name);
-//   }
-
-//   return sdk as Record<AdapterFunctions, AdapterFunction>;
-// };
-
-// // Export SDK
-// export const sdk = generateSdk();
-
-function isAdapterDataMessage(message: any): message is DataMessage {
-  return typeof message == "object" && message?.type === "data"
+function isIframeDataMessage(message: any): message is IframeDataMessage {
+  return typeof message == "object" && message?.type === "iframe-data-message"
 }
 
 const isAdapterResponseMessage = (message: any): message is AdapterResponseMessage => {
@@ -170,9 +154,35 @@ export function makeWakuObjectAdapter(): WakuObjectAdapter {
   }
 }
 
-const descriptorMap = new Map<string, WakuObjectDescriptor>();
+export function makeWakuObjectContext(adapter: WakuObjectAdapter): WakuObjectContext {
+  async function send(data: JSONSerializable) {
+    const response = await adapterFunction('send')(JSON.stringify(data))
+    if (!response) {
+      throw 'invalid response'
+    }
+  }
 
-export function startEventListener() {
+  async function updateStore() {
+    throw 'not implemented'
+  }
+
+  function onViewChange() {
+    throw 'not implemented'    
+  }
+
+  return {
+    ...adapter,
+    send,
+    updateStore,
+    onViewChange,
+  }
+}
+
+interface EventListenerOptions {
+  onDataMessage: (dataMessage: DataMessage, args: WakuObjectArgs) => Promise<void>
+}
+
+export function startEventListener(options: Partial<EventListenerOptions>) {
   // Start listener
   window.addEventListener("message", (event) => {
     console.debug('adapter sdk', { event })
@@ -185,20 +195,17 @@ export function startEventListener() {
 
     const { data } = event;
 
-    if (isAdapterDataMessage(data)) {
-      const descriptor = descriptorMap.get(data.objectId)
-
-      if (!descriptor) {
-        return
-      }
-
-      if (!descriptor.onMessage) {
-        return
-      }
-
-      const address = 'TODO'
+    if (isIframeDataMessage(data)) {
+      const message = data.message as DataMessage
       const adapter = makeWakuObjectAdapter()
-      descriptor.onMessage(address, adapter, {}, () => {}, data)
+      const context = makeWakuObjectContext(adapter)
+      const args: WakuObjectArgs = {
+        ...context,
+        ...data.state
+      }
+      if (options.onDataMessage) {
+        options.onDataMessage(message, args)
+      }
       return
     }
 
