@@ -62,16 +62,13 @@ export interface WakuObjectAdapter {
 	getContract(address: string, abi: Interface): Contract
 }
 
-type JSONObject = Partial<Record<symbol, any>>
+export type JSONPrimitive = string | number | boolean | null;
+export interface JSONObject {
+	[member: string]: JSONValue;
+}
+export interface JSONArr extends Array<JSONValue> {}
 
-type JSONArray = Array<JSONValue>
-
-export type JSONValue =
-	string |
-	number |
-	boolean |
-	JSONArray |
-	JSONObject
+export type JSONValue = JSONPrimitive | JSONObject | JSONArr;
 
 export type JSONSerializable = JSONValue
 

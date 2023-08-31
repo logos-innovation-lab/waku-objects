@@ -1,5 +1,5 @@
 import pDefer, { DeferredPromise } from "p-defer";
-import { DataMessage, JSONSerializable, Token, TokenSchema, TransactionSchema, TransactionStateSchema, WakuObjectAdapter, WakuObjectArgs, WakuObjectContext, WakuObjectState } from './types'
+import { DataMessage, JSONSerializable, JSONValue, Token, TokenSchema, TransactionSchema, TransactionStateSchema, WakuObjectAdapter, WakuObjectArgs, WakuObjectContext, WakuObjectState } from './types'
 import { Contract } from "ethers";
 
 interface AdapterRequestMessage {
@@ -9,10 +9,22 @@ interface AdapterRequestMessage {
   args: string[]
 }
 
+interface AdapterResponseSuccess {
+  type: 'success'
+  value: JSONSerializable | undefined
+}
+
+interface AdapterResponseError {
+  type: 'error'
+  value: unknown
+}
+
+type AdapterResponseResult = AdapterResponseSuccess | AdapterResponseError
+
 interface AdapterResponseMessage {
-  type: 'adapter',
+  type: 'adapter'
   id: string
-  result: unknown
+  result: AdapterResponseResult
 }
 
 export interface IframeDataMessage {
@@ -27,7 +39,7 @@ export interface IframeStartMessage {
 }
 
 // Store
-const promiseMap = new Map<string, DeferredPromise<unknown>>();
+const promiseMap = new Map<string, DeferredPromise<JSONSerializable | undefined>>();
 
 // NOTE: Probably good enough?
 const generateRandomValue = (): string => {
@@ -36,7 +48,7 @@ const generateRandomValue = (): string => {
 
 const adapterFunction = (name: string) => (...args: string[]) => {
   const id = generateRandomValue();
-  const defer = pDefer();
+  const defer = pDefer<JSONSerializable | undefined>();
 
   const message: AdapterRequestMessage = {
     type: "adapter",
@@ -69,12 +81,12 @@ export function makeWakuObjectAdapter(): WakuObjectAdapter {
   async function getTransaction(txHash: string) {
     const response = await adapterFunction('getTransaction')(txHash)
     if (!response) {
-      return
+      throw 'invalid response'
     }
 
     const result = TransactionSchema.safeParse(response)
     if (!result.success) {
-      return
+      throw 'invalid response'
     }
 
     return result.data
@@ -162,12 +174,17 @@ export function makeWakuObjectContext(adapter: WakuObjectAdapter): WakuObjectCon
     }
   }
 
-  async function updateStore() {
-    throw 'not implemented'
+  async function updateStore(updater: (store?: JSONSerializable) => JSONSerializable) {
+    const store = await adapterFunction('getStore')()
+    if (!store) {
+      throw 'invalid response'
+    }
+    const newStore = updater(store)
+    await adapterFunction('setStore')(JSON.stringify(newStore))
   }
 
-  function onViewChange() {
-    throw 'not implemented'    
+  function onViewChange(view: string) {
+    adapterFunction('onViewChange')(view)
   }
 
   return {
@@ -220,7 +237,12 @@ export function startEventListener(options: Partial<EventListenerOptions>) {
 
     promiseMap.delete(data.id)
 
-    defer.resolve(data.result);
+    if (data.result.type === 'error') {
+      defer.reject(data.result.value)
+      return
+    }
+
+    defer.resolve(data.result.value);
   });
 
 }
