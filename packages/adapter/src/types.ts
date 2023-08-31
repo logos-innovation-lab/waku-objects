@@ -62,13 +62,12 @@ export interface WakuObjectAdapter {
 	getContract(address: string, abi: Interface): Contract
 }
 
-export type JSONPrimitive = string | number | boolean | null;
-export interface JSONObject {
-	[member: string]: JSONValue;
-}
-export interface JSONArr extends Array<JSONValue> {}
+export type JSONPrimitive = string | number | boolean | null
+export type JSONObject = { [key: symbol]: JSONValue }
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface JSONArray extends Array<JSONValue> {}
 
-export type JSONValue = JSONPrimitive | JSONObject | JSONArr;
+export type JSONValue = JSONPrimitive | JSONObject | JSONArray
 
 export type JSONSerializable = JSONValue
 
@@ -81,10 +80,10 @@ export interface WakuObjectState {
 	readonly tokens: Token[]
 }
 
-export interface WakuObjectContext<
-	StoreType extends JSONSerializable = JSONSerializable,
-	DataMessageType extends JSONSerializable = JSONSerializable,
-> extends WakuObjectAdapter {
+type StoreType = JSONSerializable
+type DataMessageType = JSONSerializable
+
+export interface WakuObjectContext extends WakuObjectAdapter {
 	readonly store?: StoreType
 	updateStore: (updater: (state?: StoreType) => StoreType) => void
 
@@ -94,31 +93,17 @@ export interface WakuObjectContext<
 	onViewChange: (view: string) => void
 }
 
-export interface WakuObjectArgs<
-	StoreType extends JSONSerializable = JSONSerializable,
-	DataMessageType extends JSONSerializable = JSONSerializable,
-> extends WakuObjectContext<StoreType, DataMessageType>, WakuObjectState {
-}
+export interface WakuObjectArgs extends WakuObjectContext, WakuObjectState {}
 
-type ComponentType = unknown
-type CustomArgs = unknown
-
-export interface WakuObjectDescriptor<
-	StoreType extends JSONSerializable = JSONSerializable,
-	DataMessageType extends JSONSerializable = JSONSerializable,
-> {
+export interface WakuObjectDescriptor {
 	readonly objectId: string
 	readonly name: string
 	readonly description: string
 	readonly logo: string
 
-	readonly wakuObject: ComponentType
-	readonly standalone?: ComponentType
-	readonly customArgs?: CustomArgs
+	onMessage?: (message: DataMessage<DataMessageType>, args: WakuObjectArgs) => Promise<void>
+}
 
-	onMessage?: (
-		message: DataMessage<DataMessageType>,
-		args: WakuObjectArgs<StoreType, DataMessageType>,
-	) => Promise<void>
-	// TODO onTransaction: (store: unknown, transaction: Transaction) => unknown
+export type CustomArgs = {
+	name: string
 }
