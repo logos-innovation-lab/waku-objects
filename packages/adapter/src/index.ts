@@ -1,5 +1,5 @@
 import pDefer, { DeferredPromise } from "p-defer";
-import { DataMessage, JSONSerializable, JSONValue, Token, TokenSchema, TransactionSchema, TransactionStateSchema, WakuObjectAdapter, WakuObjectArgs, WakuObjectContext, WakuObjectState } from './types'
+import { DataMessage, JSONSerializable, Token, TokenSchema, TransactionSchema, TransactionStateSchema, WakuObjectAdapter, WakuObjectArgs, WakuObjectContext, WakuObjectState } from './types'
 import { Contract } from "ethers";
 
 interface AdapterRequestMessage {
