@@ -14,7 +14,7 @@ importers:
   objects/sandbox-example:
     dependencies:
       '@waku-objects/adapter':
-        specifier: link:../../packages/adapter
+        specifier: 0.0.0
         version: link:../../packages/adapter
       ethers:
         specifier: ^6.6.0
@@ -81,15 +81,21 @@ importers:
 
   packages/adapter:
     dependencies:
+      ethers:
+        specifier: ^6.7.1
+        version: 6.7.1
       p-defer:
         specifier: ^4.0.0
         version: 4.0.0
+      zod:
+        specifier: ^3.22.2
+        version: 3.22.2
     devDependencies:
       '@types/node':
         specifier: ^20.4.8
         version: 20.4.8
       typescript:
-        specifier: ^5.0.2
+        specifier: ^5.1.6
         version: 5.1.6
       vite:
         specifier: ^4.4.5
@@ -1713,6 +1719,22 @@ packages:
 
   /ethers@6.6.0:
     resolution: {integrity: sha512-7D2U+n8eZYmh592VZqap9vBu50jN7YUDHqAmwBYTMntmUKC9RVgcqcFbd+3DTCOQ1jMyK6QHv1usbcfgiGaHOA==}
+    engines: {node: '>=14.0.0'}
+    dependencies:
+      '@adraffy/ens-normalize': 1.9.2
+      '@noble/hashes': 1.1.2
+      '@noble/secp256k1': 1.7.1
+      '@types/node': 18.15.13
+      aes-js: 4.0.0-beta.5
+      tslib: 2.4.0
+      ws: 8.5.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+    dev: false
+
+  /ethers@6.7.1:
+    resolution: {integrity: sha512-qX5kxIFMfg1i+epfgb0xF4WM7IqapIIu50pOJ17aebkxxa4BacW5jFrQRmCJpDEg2ZK2oNtR5QjrQ1WDBF29dA==}
     engines: {node: '>=14.0.0'}
     dependencies:
       '@adraffy/ens-normalize': 1.9.2
@@ -3634,3 +3656,7 @@ packages:
     optionalDependencies:
       commander: 9.5.0
     dev: true
+
+  /zod@3.22.2:
+    resolution: {integrity: sha512-wvWkphh5WQsJbVk1tbx1l1Ly4yg+XecD+Mq280uBGt9wa5BKSWf4Mhp6GmrkPixhMxmabYY7RbzlwVP32pbGCg==}
+    dev: false
