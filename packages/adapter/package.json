@@ -2,7 +2,7 @@
   "name": "@waku-objects/adapter",
   "version": "0.1.0",
   "type": "module",
-  "main": "./dist/adapter.es.cjs",
+  "main": "./dist/adapter.umd.cjs",
   "module": "./dist/adapter.es.js",
   "types": "./dist/index.d.ts",
   "exports": {
