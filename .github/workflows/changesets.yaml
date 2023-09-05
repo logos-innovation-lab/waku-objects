@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: checkout code repository
         uses: actions/checkout@v3
-          
+
       - name: setup node.js
         uses: actions/setup-node@v3
         with:
@@ -39,5 +39,6 @@ jobs:
           commit: "chore: update versions"
           title: "chore: update versions"
           publish: pnpm ci:publish
+          version: pnpm ci:version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

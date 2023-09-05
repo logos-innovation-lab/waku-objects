@@ -1,7 +1,8 @@
 {
 	"scripts": {
 		"ci:build": "pnpm run -r build",
-		"ci:publish": "pnpm run ci:build && pnpm changeset publish"
+		"ci:publish": "pnpm run ci:build && pnpm changeset publish",
+		"ci:version": "pnpm changeset version && pnpm install --lockfile-only"
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.26.2",
