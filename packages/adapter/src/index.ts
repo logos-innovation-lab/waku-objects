@@ -59,7 +59,7 @@ const adapterFunction = (name: string) => (...args: string[]) => {
 
   // Post message to parent
   // TODO replace targetOrigin
-  parent.postMessage(message, { targetOrigin: window.origin });
+  parent.postMessage(message, { targetOrigin: '*' });
 
   // Map deferred promise to id
   promiseMap.set(id, defer);
