@@ -1,5 +1,16 @@
 # @waku-objects/sandbox-example
 
+## 0.2.0
+
+### Minor Changes
+
+- 71140a1: Fix targetOrigin
+
+### Patch Changes
+
+- Updated dependencies [71140a1]
+  - @waku-objects/adapter@0.2.0
+
 ## 0.1.0
 
 ### Minor Changes
