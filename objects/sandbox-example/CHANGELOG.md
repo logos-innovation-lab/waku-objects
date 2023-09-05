@@ -1,5 +1,16 @@
 # @waku-objects/sandbox-example
 
+## 0.3.0
+
+### Minor Changes
+
+- 7819c1a: Change targetOrigin to '\*'
+
+### Patch Changes
+
+- Updated dependencies [7819c1a]
+  - @waku-objects/adapter@0.3.0
+
 ## 0.2.0
 
 ### Minor Changes
