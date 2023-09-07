@@ -9,7 +9,6 @@
   onMount(() => {
     startEventListener({ 
       onContextChange: async (stateProps, contextProps) => {
-        console.debug('onContextChange', { stateProps, contextProps })
         const adapter = makeWakuObjectAdapter()
         const context = makeWakuObjectContext(adapter, contextProps)
         args = {
@@ -42,8 +41,6 @@
     const transaction = await context.getTransaction('0x46593fe25fadddd0bb3feb3017b8745a471d61e5c650c3dc5c0920f46216d0b6')
     console.debug('sandbox-example: action', { transaction })
   }
-
-  $: { console.debug({ args }) }
 </script>
 
 <div>

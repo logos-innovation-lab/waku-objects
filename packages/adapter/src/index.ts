@@ -210,7 +210,6 @@ interface EventListenerOptions {
 export function startEventListener(options: Partial<EventListenerOptions>) {
   // Start listener
   window.addEventListener("message", (event) => {
-    console.debug('adapter sdk', { event })
     // Check if the message came from the parent (chat app)
     /*
     if (event.origin !== "null" || event.source !== parent.contentWindow) {
@@ -258,6 +257,8 @@ export function startEventListener(options: Partial<EventListenerOptions>) {
 
     defer.resolve(data.result.value);
   });
+
+  // send `init` message after object side initialization is complete
+  // the host application will respond with the updated context
   parent.postMessage({ type: 'init' }, '*')
-  console.debug('startEventListener finished')
 }
