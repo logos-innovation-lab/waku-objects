@@ -69,7 +69,7 @@ export interface JSONArray extends Array<JSONValue> {}
 
 export type JSONValue = JSONPrimitive | JSONObject | JSONArray
 
-export type JSONSerializable = JSONValue
+export type JSONSerializable = JSONValue 
 
 export interface WakuObjectState {
 	readonly chatId: string
@@ -83,24 +83,29 @@ export interface WakuObjectState {
 type StoreType = JSONSerializable
 type DataMessageType = JSONSerializable
 
-export interface WakuObjectContext extends WakuObjectAdapter {
+export interface WakuObjectContextProps {
 	readonly store?: StoreType
+	readonly view?: string
+}
+
+export interface WakuObjectContext extends WakuObjectContextProps, WakuObjectAdapter {
 	updateStore: (updater: (state?: StoreType) => StoreType) => void
 
 	send: (data: DataMessageType) => Promise<void>
 
-	readonly view?: string
 	onViewChange: (view: string) => void
 }
 
 export interface WakuObjectArgs extends WakuObjectContext, WakuObjectState {}
 
-export interface WakuObjectDescriptor {
+interface WakuObjectMetadata {
 	readonly objectId: string
 	readonly name: string
 	readonly description: string
 	readonly logo: string
+}
 
+export interface WakuObjectDescriptor extends WakuObjectMetadata {
 	onMessage?: (message: DataMessage<DataMessageType>, args: WakuObjectArgs) => Promise<void>
 }
 
