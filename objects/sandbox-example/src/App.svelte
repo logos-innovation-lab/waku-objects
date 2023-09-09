@@ -1,9 +1,38 @@
 <script lang="ts">
   import { makeWakuObjectAdapter, makeWakuObjectContext, startEventListener } from "@waku-objects/adapter"
-  import { onMount } from "svelte";
+  import type { DataMessage, WakuObjectArgs } from "@waku-objects/adapter/dist/types";
+  import { afterUpdate, onMount } from "svelte";
+
+  let args: WakuObjectArgs
+  let message: DataMessage
 
   onMount(() => {
-    startEventListener()
+    startEventListener({ 
+      onContextChange: async (stateProps, contextProps) => {
+        const adapter = makeWakuObjectAdapter()
+        const context = makeWakuObjectContext(adapter, contextProps)
+        args = {
+          ...context,
+          ...stateProps,
+        }
+      },
+      onDataMessage: async (message_, args_) => {
+        args = args_
+        message = message_
+      }
+    })
+  })
+
+  afterUpdate(() => {
+    const { scrollWidth, scrollHeight } = document.body
+    parent.postMessage(
+      {
+        type: 'window-size',
+        scrollWidth,
+        scrollHeight,
+      },
+      '*',
+    )
   })
 
   async function action() {
@@ -14,4 +43,6 @@
   }
 </script>
 
-<div><button on:click={() => action()}>Sandbox example</button></div>
+<div>
+  <button on:click={() => action()}>Sandbox example</button>
+</div>

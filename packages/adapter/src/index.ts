@@ -1,5 +1,5 @@
 import pDefer, { DeferredPromise } from "p-defer";
-import { DataMessage, JSONSerializable, Token, TokenSchema, TransactionSchema, TransactionStateSchema, WakuObjectAdapter, WakuObjectArgs, WakuObjectContext, WakuObjectState } from './types'
+import { DataMessage, JSONSerializable, Token, TokenSchema, TransactionSchema, TransactionStateSchema, WakuObjectAdapter, WakuObjectArgs, WakuObjectContext, WakuObjectContextProps, WakuObjectState } from './types'
 import { Contract } from "ethers";
 
 interface AdapterRequestMessage {
@@ -31,11 +31,13 @@ export interface IframeDataMessage {
 	type: 'iframe-data-message'
 	message: DataMessage
   state: WakuObjectState
+  context: WakuObjectContextProps
 }
 
-export interface IframeStartMessage {
-  type: 'iframe-start-message'
+export interface IframeContextChange {
+  type: 'iframe-context-change'
   state: WakuObjectState
+  context: WakuObjectContextProps
 }
 
 // Store
@@ -70,6 +72,10 @@ const adapterFunction = (name: string) => (...args: string[]) => {
 
 function isIframeDataMessage(message: any): message is IframeDataMessage {
   return typeof message == "object" && message?.type === "iframe-data-message"
+}
+
+function isIframeContextChange(message: any): message is IframeContextChange {
+  return typeof message == "object" && message?.type === 'iframe-context-change'
 }
 
 const isAdapterResponseMessage = (message: any): message is AdapterResponseMessage => {
@@ -166,7 +172,7 @@ export function makeWakuObjectAdapter(): WakuObjectAdapter {
   }
 }
 
-export function makeWakuObjectContext(adapter: WakuObjectAdapter): WakuObjectContext {
+export function makeWakuObjectContext(adapter: WakuObjectAdapter, contextProps?: Partial<WakuObjectContextProps>): WakuObjectContext {
   async function send(data: JSONSerializable) {
     const response = await adapterFunction('send')(JSON.stringify(data))
     if (!response) {
@@ -189,6 +195,7 @@ export function makeWakuObjectContext(adapter: WakuObjectAdapter): WakuObjectCon
 
   return {
     ...adapter,
+    ...contextProps,
     send,
     updateStore,
     onViewChange,
@@ -197,12 +204,12 @@ export function makeWakuObjectContext(adapter: WakuObjectAdapter): WakuObjectCon
 
 interface EventListenerOptions {
   onDataMessage: (dataMessage: DataMessage, args: WakuObjectArgs) => Promise<void>
+  onContextChange: (state: WakuObjectState, context: WakuObjectContextProps) => Promise<void>
 }
 
 export function startEventListener(options: Partial<EventListenerOptions>) {
   // Start listener
   window.addEventListener("message", (event) => {
-    console.debug('adapter sdk', { event })
     // Check if the message came from the parent (chat app)
     /*
     if (event.origin !== "null" || event.source !== parent.contentWindow) {
@@ -215,7 +222,7 @@ export function startEventListener(options: Partial<EventListenerOptions>) {
     if (isIframeDataMessage(data)) {
       const message = data.message as DataMessage
       const adapter = makeWakuObjectAdapter()
-      const context = makeWakuObjectContext(adapter)
+      const context = makeWakuObjectContext(adapter, data.context)
       const args: WakuObjectArgs = {
         ...context,
         ...data.state
@@ -224,6 +231,12 @@ export function startEventListener(options: Partial<EventListenerOptions>) {
         options.onDataMessage(message, args)
       }
       return
+    }
+
+    if (isIframeContextChange(data)) {
+      if (options.onContextChange) {
+        options.onContextChange(data.state, data.context)
+      }
     }
 
     if (!isAdapterResponseMessage(data)) {
@@ -245,4 +258,7 @@ export function startEventListener(options: Partial<EventListenerOptions>) {
     defer.resolve(data.result.value);
   });
 
+  // send `init` message after object side initialization is complete
+  // the host application will respond with the updated context
+  parent.postMessage({ type: 'init' }, '*')
 }
