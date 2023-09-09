@@ -1,5 +1,16 @@
 # @waku-objects/sandbox-example
 
+## 0.4.0
+
+### Minor Changes
+
+- aafe39a: External object props
+
+### Patch Changes
+
+- Updated dependencies [aafe39a]
+  - @waku-objects/adapter@0.4.0
+
 ## 0.3.0
 
 ### Minor Changes
