@@ -1,6 +1,6 @@
 {
   "name": "@waku-objects/sandbox-example",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -23,7 +23,7 @@
     "vite": "^4.3.9"
   },
   "dependencies": {
-    "@waku-objects/adapter": "0.3.0",
+    "@waku-objects/adapter": "0.4.0",
     "ethers": "^6.6.0"
   }
 }
