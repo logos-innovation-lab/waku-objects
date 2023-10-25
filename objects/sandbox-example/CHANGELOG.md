@@ -1,5 +1,11 @@
 # @waku-objects/sandbox-example
 
+## 0.5.0
+
+### Minor Changes
+
+- 7e07583: feat(sandbox-example): new metadata.json format
+
 ## 0.4.0
 
 ### Minor Changes
