@@ -8,12 +8,5 @@ export default defineConfig({
     outDir: "object",
     ssr: false,
     ssrManifest: false,
-    rollupOptions: {
-      output: {
-        entryFileNames: `[name].js`,
-        chunkFileNames: `[name].js`,
-        assetFileNames: `[name].[ext]`,
-      },
-    },
   },
 });
