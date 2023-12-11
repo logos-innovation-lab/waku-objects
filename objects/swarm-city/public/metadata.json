@@ -1,0 +1,10 @@
+{
+    "name": "Swarm City",
+    "description": "Decentralized Marketplace",
+    "csp": {
+        "script-src": "'self'",
+        "connect-src": "https://rpc.gnosischain.com/ https://cloudflare-eth.com/",
+        "object-src": "'none'",
+        "base-uri": "'none'"
+    }
+}
