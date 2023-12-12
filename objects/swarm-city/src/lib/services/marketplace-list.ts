@@ -34,8 +34,6 @@ export const getMarketplaceList = async (
     strict: true,
   });
 
-  console.log(events);
-
   let lastBlock = fromBlock;
 
   for (const event of events) {
@@ -65,8 +63,6 @@ export const getMarketplaceList = async (
 
     lastBlock = event.blockNumber;
   }
-
-  console.log({ marketplaces, lastBlock });
 
   return { marketplaces, lastBlock };
 };
