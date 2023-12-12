@@ -3,42 +3,21 @@
   import { onMount } from "svelte";
 
   // View
-  import {
-    createPublicClient,
-    createWalletClient,
-    custom,
-    type Hex,
-  } from "viem";
-  import { gnosis } from "viem/chains";
+  import { type Hex } from "viem";
 
   // Waku Objects
-  import { makeWakuObjectAdapter } from "@waku-objects/adapter";
   import { updateSize } from "./lib/window";
+  import { client, wallet } from "./lib/viem";
+  import {
+    getMarketplaceList,
+    type MarketplaceListResult,
+  } from "./lib/services/marketplace-list";
 
   let account: Hex | undefined;
   let chainId: number | undefined;
   let hash: Hex | undefined;
-
-  // Viem
-  const transport = custom({
-    async request({ method, params }) {
-      const adapter = makeWakuObjectAdapter();
-      return await adapter.rpcRequest(method, params);
-    },
-  });
-
-  // This could also use a local RPC
-  const client = createPublicClient({
-    chain: gnosis,
-    transport,
-  });
-
-  const wallet = createWalletClient({
-    chain: gnosis,
-    transport,
-  });
-
   let blockNumber: bigint | null = null;
+  let list: MarketplaceListResult | undefined;
 
   onMount(() => {
     client.watchBlockNumber({
@@ -49,6 +28,14 @@
 
     wallet.getAddresses().then((accounts) => (account = accounts[0]));
     wallet.getChainId().then((_chainId) => (chainId = _chainId));
+
+    getMarketplaceList(
+      "0x72FdB3f1B2A70F4B969864D0B7EcB246B4Ba5F7F",
+      28289079n
+    ).then((_list) => {
+      list = _list;
+      setTimeout(updateSize, 1);
+    });
   });
 
   const sendNativeTokens = async () => {
@@ -77,4 +64,12 @@
 
 {#if hash}
   <div>Hash: {hash}</div>
+{/if}
+
+{#if list?.marketplaces && Object.entries(list.marketplaces).length}
+  <ul>
+    {#each Object.values(list.marketplaces) as marketplace}
+      <li>{marketplace.name}</li>
+    {/each}
+  </ul>
 {/if}
