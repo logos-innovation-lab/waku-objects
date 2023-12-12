@@ -13,7 +13,7 @@
     WakuObjectArgs,
   } from "@waku-objects/adapter/dist/types";
   import Loaded from "./Loaded.svelte";
-  import { updateSize } from "./lib/window";
+  import { updateSize } from "../lib/window";
 
   // Waku Objects
   let args: WakuObjectArgs | undefined;

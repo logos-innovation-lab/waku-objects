@@ -6,12 +6,12 @@
   import { type Hex } from "viem";
 
   // Waku Objects
-  import { updateSize } from "./lib/window";
-  import { client, wallet } from "./lib/viem";
+  import { updateSize } from "../lib/window";
+  import { client, wallet } from "../lib/viem";
   import {
     getMarketplaceList,
     type MarketplaceListResult,
-  } from "./lib/services/marketplace-list";
+  } from "../lib/services/marketplace-list";
 
   let account: Hex | undefined;
   let chainId: number | undefined;

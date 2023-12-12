@@ -17,18 +17,23 @@ const createFile = async (path) => {
 
 // I'm sure there's a way to do this directly with a Vite plugin or build step
 // Remove the index.html file
-await rm(resolve(object, "index.html"));
+await rm(resolve(object, "chat.html"));
+await rm(resolve(object, "standalone.html"));
 
 // Update the metadata.json file
 const metadata = JSON.parse(await readFile(metadataFile, "utf-8"));
 const files = await readdir(resolve(object, "assets"));
 const chat = files.find(
-  (file) => file.startsWith("index-") && file.endsWith(".js")
+  (file) => file.startsWith("chat-") && file.endsWith(".js")
+);
+const standalone = files.find(
+  (file) => file.startsWith("standalone-") && file.endsWith(".js")
 );
 
 metadata.files = {
   // The chat file could also be hardcoded but serves as an example of flexibility
   chat: await createFile(`assets/${chat}`),
+  standalone: await createFile(`assets/${standalone}`),
   logo: await createFile("logo.svg"),
 };
 

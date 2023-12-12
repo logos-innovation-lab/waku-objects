@@ -8,5 +8,11 @@ export default defineConfig({
     outDir: "object",
     ssr: false,
     ssrManifest: false,
+    rollupOptions: {
+      input: {
+        chat: "chat.html",
+        standalone: "standalone.html",
+      },
+    },
   },
 });
